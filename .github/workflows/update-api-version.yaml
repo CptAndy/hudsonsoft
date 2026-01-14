@@ -1,8 +1,12 @@
 name: Update Version and Release
+
 on:
   push:
     branches:
       - main
+    # Ignore commits made by this workflow itself to avoid loops
+    paths-ignore:
+      - 'cmd/api/main.go'
 
 permissions:
   contents: write
@@ -10,23 +14,36 @@ permissions:
 jobs:
   update-version:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
 
-      - name: Extract latest version from CHANGELOG.md
+    steps:
+      # Step 1: Checkout repo
+      - uses: actions/checkout@v3
+
+      # Step 2: Extract latest version from CHANGELOG.md
+      - name: Extract latest version
         id: get_version
+        shell: bash
         run: |
           VERSION=$(grep -oP '\[\K[0-9]+\.[0-9]+\.[0-9]+' CHANGELOG.md | head -1)
-          echo "::set-output name=VERSION::$VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Update version in cmd/api/main.go
+      # Step 3: Update version in main.go
+      - name: Update main.go version
+        shell: bash
         run: |
-          sed -i "s/const version = \".*\"/const version = \"${{ steps.get_version.outputs.VERSION }}\"/" cmd/api/main.go
+          sed -i "s/const version = \".*\"/const version = \"$VERSION\"/" cmd/api/main.go
+          git diff
 
+      # Step 4: Commit and push only if there are changes
       - name: Commit and push if changed
+        shell: bash
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
-          git add cmd/api/main.go
-          git commit -m "Update version to ${{ steps.get_version.outputs.VERSION }}" || echo "No changes to commit"
-          git push
+          if ! git diff --quiet; then
+            git add cmd/api/main.go
+            git commit -m "chore: update version to $VERSION"
+            git push
+          else
+            echo "No changes to commit"
+          fi
