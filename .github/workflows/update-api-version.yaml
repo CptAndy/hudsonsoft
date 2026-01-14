@@ -1,10 +1,10 @@
-name: Update Version and Release
+name: Auto Bump Version and Update Main
 
 on:
   push:
     branches:
       - main
-    # Ignore commits made by this workflow itself to avoid loops
+    # ignore the workflow’s own commits to avoid loops
     paths-ignore:
       - 'cmd/api/main.go'
 
@@ -12,37 +12,48 @@ permissions:
   contents: write
 
 jobs:
-  update-version:
+  auto-version:
     runs-on: ubuntu-latest
-
     steps:
       # Step 1: Checkout repo
       - uses: actions/checkout@v3
 
-      # Step 2: Extract latest version from CHANGELOG.md
-      - name: Extract latest version
+      # Step 2: Read current topmost version from CHANGELOG.md
+      - name: Get current version
         id: get_version
         shell: bash
         run: |
-          VERSION=$(grep -oP '\[\K[0-9]+\.[0-9]+\.[0-9]+' CHANGELOG.md | head -1)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          CURRENT=$(grep -oP '\[\K[0-9]+\.[0-9]+\.[0-9]+' CHANGELOG.md | head -1)
+          echo "CURRENT=$CURRENT" >> $GITHUB_ENV
 
-      # Step 3: Update version in main.go
-      - name: Update main.go version
+          # Split version into major.minor.patch
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          PATCH=$((PATCH + 1))
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+      # Step 3: Update main.go version
+      - name: Update version in main.go
         shell: bash
         run: |
-          sed -i "s/const version = \".*\"/const version = \"$VERSION\"/" cmd/api/main.go
-          git diff
+          sed -i "s/const version = \".*\"/const version = \"$NEW_VERSION\"/" cmd/api/main.go
 
-      # Step 4: Commit and push only if there are changes
-      - name: Commit and push if changed
+      # Step 4: Update CHANGELOG.md
+      - name: Add new version to CHANGELOG.md
+        shell: bash
+        run: |
+          DATE=$(date +%F)
+          sed -i "1i## [$NEW_VERSION] - $DATE\n### Added\n- Auto version bump via workflow\n" CHANGELOG.md
+
+      # Step 5: Commit and push changes if any
+      - name: Commit and push
         shell: bash
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
           if ! git diff --quiet; then
-            git add cmd/api/main.go
-            git commit -m "chore: update version to $VERSION"
+            git add cmd/api/main.go CHANGELOG.md
+            git commit -m "chore: bump version to $NEW_VERSION"
             git push
           else
             echo "No changes to commit"
