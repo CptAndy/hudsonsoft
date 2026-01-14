@@ -1,0 +1,16 @@
+
+
+services:
+  db:
+    image: postgres:latest
+    container_name: hudsonsoft_db
+    environment:
+      POSTGRES_DB: hudsonsoft
+      POSTGRES_USER: admin 
+      POSTGRES_PASSWORD: adminpassword
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+volumes:
+  db_data:
