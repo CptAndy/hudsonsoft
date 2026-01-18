@@ -8,11 +8,11 @@ import (
 )
 
 type Employee struct {
-	ID       int64    `json:"id"`
-	Emp_id   string    `json:"emp_id"`
-	Fname    string   `json:"first_name"`
-	Lname    string   `json:"last_name"`
-	Password password `json:"-"`
+	ID         int64    `json:"id"`
+	Emp_id     string   `json:"emp_id"`
+	First_name string   `json:"first_name"`
+	Last_name  string   `json:"last_name"`
+	Password   password `json:"-"`
 }
 
 type password struct {
@@ -40,9 +40,9 @@ type EmployeeStore struct {
 }
 
 func (s *EmployeeStore) Create(ctx context.Context, employee *Employee) error {
-return withTx(s.db, ctx, func(tx *sql.Tx) error{
-	return s.create(ctx,tx,employee)
-})
+	return withTx(s.db, ctx, func(tx *sql.Tx) error {
+		return s.create(ctx, tx, employee)
+	})
 
 }
 
@@ -57,11 +57,11 @@ VALUES ($1,$2,$3) returning id
 	err := tx.QueryRowContext(
 		ctx,
 		query,
-		employee.Fname,
-		employee.Lname,
+		employee.First_name,
+		employee.Last_name,
 		employee.Password.hash,
 	).Scan(
-		
+
 		&employee.ID,
 	)
 	if err != nil {
@@ -93,8 +93,8 @@ func (s *EmployeeStore) GetByID(ctx context.Context, empID string) (*Employee, e
 	).Scan(
 		&employee.ID,
 		&employee.Emp_id,
-		&employee.Fname,
-		&employee.Lname,
+		&employee.First_name,
+		&employee.Last_name,
 		&passwordHash,
 	)
 

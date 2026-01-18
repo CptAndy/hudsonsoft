@@ -12,7 +12,8 @@ var (
 	ErrConflict            = errors.New("resource already exists...duplicate key values violate constraint")
 	ErrDuplicateEmail      = errors.New("email duplicate not allowed...violates unique contraints")
 	ErrDuplicateUsername   = errors.New("username duplicate not allowed...violates unique contraints")
-	ErrDuplicateEmployeeID = errors.New("employeeID duplicate not allowed...violates unique contraints")
+	ErrDuplicateEmployeeID = errors.New("employee_id duplicate not allowed...violates unique contraints")
+	ErrDuplicateCustomerID = errors.New("customer_id duplicate not allowed...violates unique contraints")
 
 	QueryTimeoutDuration = time.Second * 5
 )
@@ -23,14 +24,16 @@ type Storage struct {
 		GetByID(context.Context, string) (*Employee, error)
 		Delete(context.Context, string) error
 	}
-	Customer interface {
+	Customers interface {
 		Create(context.Context, *Customer) error
+		Delete(context.Context, string) error
 	}
 }
 
 func NewStorage(db *sql.DB) Storage {
 	return Storage{
 		Employees: &EmployeeStore{db},
+		Customers: &CustomerStore{db},
 	}
 }
 

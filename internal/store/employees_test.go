@@ -38,8 +38,8 @@ func TestEmployeeCreate(t *testing.T) {
 	store := &EmployeeStore{db: db}
 
 	employee := &Employee{
-		Fname: "Test",
-		Lname: "Test",
+		First_name: "Test",
+		Last_name: "Test",
 	}
 
 	err := employee.Password.Set("test")
@@ -50,8 +50,8 @@ func TestEmployeeCreate(t *testing.T) {
 	mock.ExpectBegin()
 
 	mock.ExpectQuery(`INSERT INTO employees`).WithArgs(
-		employee.Fname,
-		employee.Lname,
+		employee.First_name,
+		employee.Last_name,
 		sqlmock.AnyArg(),
 	).
 		WillReturnRows(
@@ -82,8 +82,8 @@ func TestEmployeeGetById(t *testing.T) {
 	employee := &Employee{
 		ID:     1,
 		Emp_id: employee_id,
-		Fname:  "Test",
-		Lname:  "Test",
+		First_name:  "Test",
+		Last_name:  "Test",
 	}
 
 	err := employee.Password.Set("test")
@@ -95,7 +95,7 @@ func TestEmployeeGetById(t *testing.T) {
 		WithArgs(employee_id).
 		WillReturnRows(
 			sqlmock.NewRows([]string{"id", "emp_id", "first_name", "last_name", "employee_pass"}).
-				AddRow(employee.ID, employee.Emp_id, employee.Fname, employee.Lname, []byte("hash")),
+				AddRow(employee.ID, employee.Emp_id, employee.First_name, employee.Last_name, []byte("hash")),
 		)
 
 	employee, err = store.GetByID(context.Background(), employee_id)

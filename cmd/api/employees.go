@@ -35,8 +35,8 @@ func (app *application) createEmployeeHandler(w http.ResponseWriter, r *http.Req
 	}
 
 	employee := &store.Employee{
-		Fname: payload.First_name,
-		Lname: payload.Last_name,
+		First_name: payload.First_name,
+		Last_name: payload.Last_name,
 	}
 
 	if err := employee.Password.Set(payload.Password); err != nil {
