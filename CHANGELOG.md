@@ -1,6 +1,7 @@
-## [0.0.3] - 2026-01-14
+## [0.0.3] - 2026-01-18
 ### Added
-- Added Customers, Create customer function and delete customer
+- Auto version bump via workflow
+
 ## [0.0.2] - 2026-01-14
 ### Added
 - Auto version bump via workflow
