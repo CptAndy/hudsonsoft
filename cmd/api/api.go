@@ -49,6 +49,7 @@ func (app *application) mount() *chi.Mux {
 			
 			r.Route("/{employeeID}", func(r chi.Router) {
 				r.Get("/", app.getEmployeeHandler)
+				r.Delete("/", app.deleteEmployeeHandler)
 			})
 
 		})
@@ -68,6 +69,7 @@ func (app *application) run(mux http.Handler) error {
 	}
 
 	log.Printf("SERVER RUNNING AT %s", app.config.addr)
+	log.Printf("ENV: %s", app.config.env)
 
 	return srv.ListenAndServe()
 }

@@ -23,6 +23,9 @@ type Storage struct {
 		GetByID(context.Context, string) (*Employee, error)
 		Delete(context.Context, string) error
 	}
+	Customer interface {
+		Create(context.Context, *Customer) error
+	}
 }
 
 func NewStorage(db *sql.DB) Storage {
