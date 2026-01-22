@@ -5,6 +5,7 @@
 ### Added
 - Added Customer creation
 - Added Customer deletion
+- Pending improvement of creation IDs 
 ## [0.0.3] - 2026-01-18
 ### Added
 - Auto version bump via workflow
