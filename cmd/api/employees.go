@@ -13,10 +13,9 @@ var (
 )
 
 type CreateEmployeePayload struct {
-	First_name string `json:"first_name" validate:"required,max=100"`
-	Last_name  string `json:"last_name" validate:"required,max=100"`
-	Password   string `json:"password" validate:"required,min=3,max=72"`
-}
+	First_name string `json:"first_name" validate:"required,max=50"`
+	Last_name  string `json:"last_name" validate:"required,max=50"`
+	Password   string `json:"password" validate:"required,min=3,max=25"`}
 
 type empKey string
 

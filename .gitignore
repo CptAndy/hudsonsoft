@@ -4,6 +4,6 @@
 # Docker compose files
 docker-compose.yml
 docker-compose.override.yml
-
+.vscode
 # Optional: ignore local Docker files
 *.env.local

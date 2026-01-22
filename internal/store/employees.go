@@ -49,7 +49,7 @@ func (s *EmployeeStore) Create(ctx context.Context, employee *Employee) error {
 func (s *EmployeeStore) create(ctx context.Context, tx *sql.Tx, employee *Employee) error {
 	query := `
 	INSERT INTO employees (first_name, last_name, employee_pass)
-VALUES ($1,$2,$3) returning id
+VALUES ($1,$2,$3) returning id, emp_id
 	`
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
@@ -61,8 +61,9 @@ VALUES ($1,$2,$3) returning id
 		employee.Last_name,
 		employee.Password.hash,
 	).Scan(
-
 		&employee.ID,
+	&employee.Emp_id,
+
 	)
 	if err != nil {
 		switch {

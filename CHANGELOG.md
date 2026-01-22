@@ -1,7 +1,7 @@
-## [0.0.4] - 2026-01-18
+## [0.0.4] - 2026-01-22
 ### Added
-- Auto version bump via workflow
-
+- Added Customer creation
+- Added Customer deletion
 ## [0.0.3] - 2026-01-18
 ### Added
 - Auto version bump via workflow

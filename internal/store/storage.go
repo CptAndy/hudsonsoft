@@ -26,6 +26,7 @@ type Storage struct {
 	}
 	Customers interface {
 		Create(context.Context, *Customer) error
+		GetByID(context.Context, string) (*Customer, error)
 		Delete(context.Context, string) error
 	}
 }

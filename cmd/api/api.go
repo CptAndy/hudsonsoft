@@ -54,7 +54,36 @@ func (app *application) mount() *chi.Mux {
 
 		})
 
-	})
+		r.Route("/customer", func(r chi.Router) {
+			r.Route("/create", func(r chi.Router) {
+				r.Put("/", app.createCustomerHandler)
+			})
+
+			r.Route("/{customerID}",func(r chi.Router) {
+				r.Get("/", app.getCustomerHandler)
+				r.Delete("/",app.deleteCustomerHandler)
+			})
+
+		})
+
+		r.Route("/inventory", func(r chi.Router) {
+			r.Route("/addproduct", func(r chi.Router) {
+				// adding product to inventory
+				r.Put("/", app.createProductHandler)
+			})
+
+			r.Route("/{productID}",func(r chi.Router) {
+				// searching product by sales number
+				r.Get("/", app.getProductHandler)
+				// Removing product from inventory
+				r.Delete("/", app.deleteProductHandler)
+				// Ordering stock
+				r.Put("/", app.updateStockHandler)
+			})
+		})
+
+
+	}) // END OF /v1/
 	return r
 }
 

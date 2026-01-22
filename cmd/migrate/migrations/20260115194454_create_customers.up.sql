@@ -1,43 +1,42 @@
 
 CREATE EXTENSION IF NOT EXISTS citext;
 
-
-CREATE OR REPLACE FUNCTION generate_uid(first_name TEXT, last_name TEXT)
+CREATE OR REPLACE FUNCTION generate_cuid(first_name TEXT, last_name TEXT)
 RETURNS TEXT AS $$
 DECLARE
-    first_letter CHAR;
-    last_letter CHAR;
-    digits INT;
-	new_uid TEXT;
+	first_letter CHAR;
+	last_letter CHAR;
+	digits INT;
+	new_cuid TEXT;
 BEGIN
-    -- Take first letters and make uppercase
-    first_letter := upper(substr(first_name, 1, 1));
-    last_letter := upper(substr(last_name, 1, 1));
+    -- First letters from name uppercase
+    first_letter := UPPER(substr(first_name,1,1));
+    last_letter := UPPER(substr(last_name,1,1));
 LOOP
-    -- Generate  random digits
-    digits := floor(random() * 90000000 + 10000000)::int;
+    -- Generate 8 digits
+    digits := floor(random() * (99999999 - 10000000) + 10000000)::int;
 
-	-- Combine and store
-	new_uid := first_letter || last_letter || digits;
+    -- stores
+    new_cuid := first_letter || last_letter || digits;
 
-	-- Check if it exists
-	IF NOT EXISTS (SELECT 1 FROM customers WHERE cust_id = new_uid) THEN
-            RETURN new_uid; -- unique, return it
+    IF NOT EXISTS (SELECT 1 FROM customers WHERE cust_id = new_cuid) THEN
+            RETURN new_cuid; -- return
         END IF;
 
-        -- Otherwise, loop again and try new digits
+    -- LOOP AGAIN IF THE UNIQUE ID IS FOUND
     END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
 
+
 CREATE TABLE customers(
     id SERIAL PRIMARY KEY,
-    cust_id varchar(10) NOT NULL UNIQUE,
+    cust_id varchar(10) UNIQUE NOT NULL,
     first_name varchar NOT NULL,
     last_name varchar NOT NULL,
     Email    CITEXT,  
-    city  varchar (2),
+    city  varchar (100),
     state varchar(2),
     amount_spent     NUMERIC DEFAULT 0.00,
     product_owned    INT DEFAULT 0,
@@ -45,9 +44,9 @@ CREATE TABLE customers(
 );
 
 CREATE OR REPLACE FUNCTION set_cust_id()
-RETURNS TRIGGER as $$
+RETURNS TRIGGER AS $$
 BEGIN
-    NEW.cust_id := generate_uid(NEW.first_name, NEW.last_name);
+    NEW.cust_id := generate_cuid(NEW.first_name, NEW.last_name);
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
