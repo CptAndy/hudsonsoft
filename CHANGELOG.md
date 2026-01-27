@@ -1,3 +1,6 @@
+## [0.0.5] - 2026-01-27
+### Added
+- Added product handling
 ## [0.0.4] - 2026-01-22
 ### Added
 - Added Customer creation

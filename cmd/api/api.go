@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/CptAndy/hudsonsoftbackend/internal/store"
-	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 )
@@ -72,14 +72,12 @@ func (app *application) mount() *chi.Mux {
 				r.Put("/", app.createProductHandler)
 			})
 
-			r.Route("/{productID}",func(r chi.Router) {
-				// searching product by sales number
+			r.Route("/{productID}", func(r chi.Router) {
 				r.Get("/", app.getProductHandler)
-				// Removing product from inventory
-				r.Delete("/", app.deleteProductHandler)
-				// Ordering stock
-				r.Put("/", app.updateStockHandler)
+				r.Delete("/",app.deleteProductHandler)
 			})
+
+		
 		})
 
 

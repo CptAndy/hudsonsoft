@@ -85,9 +85,6 @@ func (app *application) getCustomerHandler(w http.ResponseWriter, r *http.Reques
 func (app *application) deleteCustomerHandler(w http.ResponseWriter, r *http.Request) {
 	custID := chi.URLParam(r, "customerID")
 
-	
-	// TODO: REMOVE THIS LINE
-	log.Printf("HERE: %s", custID)
 
 	ctx := r.Context()
 

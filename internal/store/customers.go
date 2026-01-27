@@ -3,7 +3,6 @@ package store
 import (
 	"context"
 	"database/sql"
-	"log"
 )
 
 type Customer struct {
@@ -26,14 +25,14 @@ type CustomerStore struct {
 }
 
 // Find a customer using their ID
-func (s *CustomerStore) GetByID(ctx context.Context, custID string) (*Customer, error){
+func (s *CustomerStore) GetByID(ctx context.Context, custID string) (*Customer, error) {
 	query := `SELECT c.cust_id, c.first_name, c.last_name, c.email, c.city, c.state 
 			FROM customers c
 			WHERE id = (SELECT id 
 						FROM customers 
 						WHERE cust_id = $1)`
 
-	ctx, cancel := context.WithTimeout(ctx,QueryTimeoutDuration)
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
 	customer := &Customer{}
@@ -83,10 +82,6 @@ func (s *CustomerStore) Delete(ctx context.Context, custID string) error {
 
 // DELETE QUERY
 func (s *CustomerStore) delete(ctx context.Context, tx *sql.Tx, custID string) error {
-	
-	// TODO: REMOVE THIS LINE
-	log.Println(custID)
-	
 	query := `DELETE FROM customers WHERE cust_id = $1`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
