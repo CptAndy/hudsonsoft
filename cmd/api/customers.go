@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"log"
 	"net/http"
 
 	"github.com/CptAndy/hudsonsoftbackend/internal/store"
@@ -84,7 +83,6 @@ func (app *application) getCustomerHandler(w http.ResponseWriter, r *http.Reques
 
 func (app *application) deleteCustomerHandler(w http.ResponseWriter, r *http.Request) {
 	custID := chi.URLParam(r, "customerID")
-
 
 	ctx := r.Context()
 

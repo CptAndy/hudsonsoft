@@ -77,6 +77,10 @@ func (app *application) mount() *chi.Mux {
 				r.Delete("/",app.deleteProductHandler)
 			})
 
+			r.Route("/addvariation", func(r chi.Router) {
+				r.Put("/", app.createProductTypeHandler)
+			})
+
 		
 		})
 

@@ -14,7 +14,8 @@ var (
 	ErrDuplicateUsername   = errors.New("username duplicate not allowed...violates unique contraints")
 	ErrDuplicateEmployeeID = errors.New("employee_id duplicate not allowed...violates unique contraints")
 	ErrDuplicateCustomerID = errors.New("customer_id duplicate not allowed...violates unique contraints")
-	ErrDuplicateSalesNum   = errors.New("sales_num dunplicate not allowed...violates unique contraints")
+	ErrDuplicateSalesNum   = errors.New("sales_num duplicate not allowed...violates unique contraints")
+	ErrDuplicateTypeID     = errors.New("type_id duplicate not allowed...violates unique contraints")
 	QueryTimeoutDuration   = time.Second * 5
 )
 
@@ -34,13 +35,17 @@ type Storage struct {
 		GetBySalesNum(context.Context, string) (*Product, error)
 		Delete(context.Context, string) error
 	}
+	ProductTypes interface {
+		Create(context.Context, *ProductType) error
+	}
 }
 
 func NewStorage(db *sql.DB) Storage {
 	return Storage{
-		Employees: &EmployeeStore{db},
-		Customers: &CustomerStore{db},
-		Products:  &ProductStore{db},
+		Employees:    &EmployeeStore{db},
+		Customers:    &CustomerStore{db},
+		Products:     &ProductStore{db},
+		ProductTypes: &ProductTypeStore{db},
 	}
 }
 
