@@ -1,3 +1,7 @@
+## [0.0.7] - 2026-01-27
+### Added
+- Auto version bump via workflow
+
 ## [0.0.6] - 2026-01-27
 ### Added
 - Auto version bump via workflow
