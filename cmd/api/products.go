@@ -34,8 +34,15 @@ func (app *application) createProductHandler(w http.ResponseWriter, r *http.Requ
 
 	err := app.store.Products.Create(ctx, product)
 	if err != nil {
-		app.internalServerError(w, r, err)
-		return
+		switch err {
+		case store.ErrDuplicateProduct:
+			app.conflictResponse(w, r, err)
+			return
+		default:
+			app.internalServerError(w, r, err)
+			return
+		}
+
 	}
 }
 
@@ -65,7 +72,7 @@ func (app *application) getProductHandler(w http.ResponseWriter, r *http.Request
 	}
 
 }
-func (app *application) deleteProductHandler(w http.ResponseWriter, r *http.Request){
+func (app *application) deleteProductHandler(w http.ResponseWriter, r *http.Request) {
 	prodID := chi.URLParam(r, "productID")
 
 	ctx := r.Context()

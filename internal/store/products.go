@@ -3,6 +3,9 @@ package store
 import (
 	"context"
 	"database/sql"
+	"errors"
+
+	"github.com/lib/pq"
 )
 
 type Product struct {
@@ -17,7 +20,8 @@ type ProductStore struct {
 
 // Find product by sales_num
 func (s *ProductStore) GetBySalesNum(ctx context.Context, salesNum string) (*Product, error) {
-	query := `SELECT
+	query := `
+SELECT
     p.sales_num,
     p.product_name
 FROM
@@ -82,12 +86,16 @@ func (s *ProductStore) create(ctx context.Context, tx *sql.Tx, product *Product)
 	)
 
 	if err != nil {
-		switch {
-		case err.Error() == `duplicate key value violates unique constraint "products_sales_num_key"`:
-			return ErrDuplicateSalesNum
-		default:
-			return err
+		var pqErr *pq.Error
+		if errors.As(err, &pqErr) {
+			switch pqErr.Code {
+			case "23505":
+				return ErrDuplicateProduct
+			default:
+				return err
+			}
 		}
+
 	}
 	return nil
 

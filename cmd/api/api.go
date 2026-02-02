@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/CptAndy/hudsonsoftbackend/internal/store"
-	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"go.uber.org/zap"
 )
 
@@ -43,10 +43,10 @@ func (app *application) mount() *chi.Mux {
 		r.Get("/health", app.healthCheckHandler)
 
 		r.Route("/employee", func(r chi.Router) {
-			r.Route("/create" , func(r chi.Router) {
-				r.Put("/",app.createEmployeeHandler)
+			r.Route("/create", func(r chi.Router) {
+				r.Put("/", app.createEmployeeHandler)
 			})
-			
+
 			r.Route("/{employeeID}", func(r chi.Router) {
 				r.Get("/", app.getEmployeeHandler)
 				r.Delete("/", app.deleteEmployeeHandler)
@@ -59,31 +59,40 @@ func (app *application) mount() *chi.Mux {
 				r.Put("/", app.createCustomerHandler)
 			})
 
-			r.Route("/{customerID}",func(r chi.Router) {
+			r.Route("/{customerID}", func(r chi.Router) {
 				r.Get("/", app.getCustomerHandler)
-				r.Delete("/",app.deleteCustomerHandler)
+				r.Delete("/", app.deleteCustomerHandler)
 			})
 
 		})
 
 		r.Route("/inventory", func(r chi.Router) {
-			r.Route("/addproduct", func(r chi.Router) {
+			r.Route("/product/addproduct", func(r chi.Router) {
 				// adding product to inventory
 				r.Put("/", app.createProductHandler)
 			})
 
-			r.Route("/{productID}", func(r chi.Router) {
+			r.Route("/product/{productID}", func(r chi.Router) {
 				r.Get("/", app.getProductHandler)
-				r.Delete("/",app.deleteProductHandler)
+				r.Delete("/", app.deleteProductHandler)
 			})
 
 			r.Route("/addvariation", func(r chi.Router) {
 				r.Put("/", app.createProductTypeHandler)
 			})
 
-		
+			r.Route("/variation/{prodTypeID}", func(r chi.Router) {
+				r.Get("/", app.getProductTypeHandler)
+				r.Delete("/", app.deleteProductTypeHandler)
+
+			})
+
+
 		})
 
+		r.Route("/adminfunctions", func(r chi.Router) {
+				r.Put("/", app.createReturnReasonHandler)
+			})
 
 	}) // END OF /v1/
 	return r

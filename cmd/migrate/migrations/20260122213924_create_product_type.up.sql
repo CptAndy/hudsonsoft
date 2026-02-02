@@ -21,8 +21,7 @@ BEGIN
             SELECT
                 1
             FROM
-                product_type
-            WHERE
+                product_types        WHERE
                 type_id = new_typeid) THEN
         RETURN new_typeid;
     END IF;
@@ -32,7 +31,7 @@ $$
 LANGUAGE plpgsql;
 
 -- Statement # 2
-CREATE TABLE IF NOT EXISTS product_type (
+CREATE TABLE IF NOT EXISTS product_types (
     id serial PRIMARY KEY,
     type_id varchar(4) UNIQUE NOT NULL,
     type_name text UNIQUE NOT NULL
@@ -51,6 +50,6 @@ LANGUAGE plpgsql;
 
 -- Statement # 4
 CREATE TRIGGER type_id_trigger
-    BEFORE INSERT ON product_type
+    BEFORE INSERT ON product_types
     FOR EACH ROW
     EXECUTE FUNCTION set_type_id ();
