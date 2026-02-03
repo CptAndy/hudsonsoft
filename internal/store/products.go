@@ -22,6 +22,7 @@ type ProductStore struct {
 func (s *ProductStore) GetBySalesNum(ctx context.Context, salesNum string) (*Product, error) {
 	query := `
 SELECT
+	p.id,
     p.sales_num,
     p.product_name
 FROM
@@ -45,6 +46,7 @@ WHERE
 		query,
 		salesNum,
 	).Scan(
+		&product.ID,
 		&product.Sales_num,
 		&product.Product_name,
 	)

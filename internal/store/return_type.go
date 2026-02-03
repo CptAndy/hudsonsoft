@@ -10,7 +10,7 @@ import (
 
 type ReturnType struct {
 	ID          int64  `json:"id"`
-	Return_Name string `json:"return_name"`
+	Return_name string `json:"return_name"`
 }
 
 type ReturnTypeStore struct {
@@ -48,7 +48,7 @@ func (s *ReturnTypeStore) GetByReturnID(ctx context.Context, returntypeID string
 		returntypeID,
 	).Scan(
 		&returnType.ID,
-		&returnType.Return_Name,
+		&returnType.Return_name,
 	)
 
 	if err != nil {
@@ -72,7 +72,7 @@ func (s *ReturnTypeStore) create(ctx context.Context, tx *sql.Tx, returntype *Re
 	err := tx.QueryRowContext(
 		ctx,
 		query,
-		returntype.Return_Name,
+		returntype.Return_name,
 	).Scan(
 		&returntype.ID,
 	)
@@ -94,7 +94,7 @@ func (s *ReturnTypeStore) create(ctx context.Context, tx *sql.Tx, returntype *Re
 }
 
 func (s *ReturnTypeStore) delete(ctx context.Context, tx *sql.Tx, returnTypeID string) error {
-	query := `DELETE FROM return_types WHERE type_id = $1`
+	query := `DELETE FROM return_types WHERE id = $1`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()

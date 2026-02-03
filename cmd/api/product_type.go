@@ -35,7 +35,7 @@ func (app *application) createProductTypeHandler(w http.ResponseWriter, r *http.
 
 	err := app.store.ProductTypes.Create(ctx, product_type)
 	if err != nil {
-		app.internalServerError(w, r, err)
+		app.conflictResponse(w, r, err)
 		return
 	}
 

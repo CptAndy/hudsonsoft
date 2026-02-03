@@ -30,6 +30,7 @@ func (s *ProductTypeStore) Create(ctx context.Context, prodtype *ProductType) er
 func (s *ProductTypeStore) GetByTypeID(ctx context.Context, prodTypeID string) (*ProductType, error) {
 	query := `
 SELECT
+	pt.id,
     pt.type_id,
     pt.type_name
 FROM
@@ -53,6 +54,7 @@ WHERE
 		query,
 		prodTypeID,
 	).Scan(
+		&productType.ID,
 		&productType.Type_ID,
 		&productType.Type_Name,
 	)

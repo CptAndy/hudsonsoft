@@ -87,12 +87,18 @@ func (app *application) mount() *chi.Mux {
 
 			})
 
-
 		})
 
 		r.Route("/adminfunctions", func(r chi.Router) {
+			r.Route("/returnfunctions", func(r chi.Router) {
 				r.Put("/", app.createReturnReasonHandler)
 			})
+		
+			r.Route("/returnfunctions/{returnTypeID}", func(r chi.Router) {
+				r.Get("/", app.getReturnReasonHandler)
+				r.Delete("/", app.deleteReturnReasonHandler)
+			})
+		})
 
 	}) // END OF /v1/
 	return r

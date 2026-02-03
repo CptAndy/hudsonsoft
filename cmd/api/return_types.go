@@ -13,7 +13,7 @@ var (
 )
 
 type CreateaReturnTypePayload struct {
-	Return_type_name string `json:"return_type_name" validate:"required,max=50"`
+	Return_type_name string `json:"return_type_name" validate:"required,min=3,max=50"`
 }
 
 type returnKey string
@@ -34,15 +34,21 @@ func (app *application) createReturnReasonHandler(w http.ResponseWriter, r *http
 	}
 
 	reasoning := &store.ReturnType{
-		Return_Name: payload.Return_type_name,
+		Return_name: payload.Return_type_name,
 	}
 
 	ctx := r.Context()
 
 	err := app.store.ReturnTypes.Create(ctx, reasoning)
 	if err != nil {
-		app.internalServerError(w, r, err)
-		return
+		switch err {
+		case store.ErrDuplicateReason:
+			app.conflictResponse(w, r, err)
+			return
+		default:
+			app.internalServerError(w, r, err)
+			return
+		}
 	}
 }
 
@@ -63,5 +69,30 @@ func (app *application) deleteReturnReasonHandler(w http.ResponseWriter, r *http
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
+
+}
+
+func (app *application) getReturnReasonHandler(w http.ResponseWriter, r *http.Request){
+	returnTypeID := chi.URLParam(r, "returnTypeID")
+
+ctx := r.Context()
+
+return_reason, err := app.store.ReturnTypes.GetByReturnID(ctx, returnTypeID)
+if err != nil {
+	switch err {
+	case store.ErrNotFound:
+		app.notFoundResponse(w, r, err)
+	default:
+		app.internalServerError(w, r, err)
+		
+	}
+	return
+}
+
+if err := app.jsonResponse(w, http.StatusOK, return_reason); err != nil {
+	app.internalServerError(w, r, err)
+	return
+}
+
 
 }
