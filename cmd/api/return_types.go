@@ -41,11 +41,15 @@ func (app *application) createReturnReasonHandler(w http.ResponseWriter, r *http
 
 	err := app.store.ReturnTypes.Create(ctx, reasoning)
 	if err != nil {
+		//log.Printf("HANDLER ERR TYPE: %T", err)
+		//log.Printf("HANDLER ERR VALUE: %+v", err)
 		switch err {
-		case store.ErrDuplicateReason:
+		case store.ErrDuplicateReturnType:
+			//log.Println("INSIDE CONFLICT RESPONSE")
 			app.conflictResponse(w, r, err)
 			return
 		default:
+			//log.Println("INSIDE INTERNAL SERVER ERROR RESPONSE")
 			app.internalServerError(w, r, err)
 			return
 		}
@@ -72,27 +76,26 @@ func (app *application) deleteReturnReasonHandler(w http.ResponseWriter, r *http
 
 }
 
-func (app *application) getReturnReasonHandler(w http.ResponseWriter, r *http.Request){
+func (app *application) getReturnReasonHandler(w http.ResponseWriter, r *http.Request) {
 	returnTypeID := chi.URLParam(r, "returnTypeID")
 
-ctx := r.Context()
+	ctx := r.Context()
 
-return_reason, err := app.store.ReturnTypes.GetByReturnID(ctx, returnTypeID)
-if err != nil {
-	switch err {
-	case store.ErrNotFound:
-		app.notFoundResponse(w, r, err)
-	default:
-		app.internalServerError(w, r, err)
-		
+	return_reason, err := app.store.ReturnTypes.GetByReturnID(ctx, returnTypeID)
+	if err != nil {
+		switch err {
+		case store.ErrNotFound:
+			app.notFoundResponse(w, r, err)
+		default:
+			app.internalServerError(w, r, err)
+
+		}
+		return
 	}
-	return
-}
 
-if err := app.jsonResponse(w, http.StatusOK, return_reason); err != nil {
-	app.internalServerError(w, r, err)
-	return
-}
-
+	if err := app.jsonResponse(w, http.StatusOK, return_reason); err != nil {
+		app.internalServerError(w, r, err)
+		return
+	}
 
 }

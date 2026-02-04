@@ -34,7 +34,7 @@ func (s *ReturnTypeStore) Delete(ctx context.Context, returntypeID string) error
 	})
 }
 
-func (s *ReturnTypeStore) GetByReturnID(ctx context.Context, returntypeID string) (*ReturnType, error){
+func (s *ReturnTypeStore) GetByReturnID(ctx context.Context, returntypeID string) (*ReturnType, error) {
 	query := `SELECT id, return_name FROM return_types WHERE id = $1`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
@@ -52,6 +52,7 @@ func (s *ReturnTypeStore) GetByReturnID(ctx context.Context, returntypeID string
 	)
 
 	if err != nil {
+
 		switch err {
 		case sql.ErrNoRows:
 			return nil, ErrNotFound
@@ -64,7 +65,7 @@ func (s *ReturnTypeStore) GetByReturnID(ctx context.Context, returntypeID string
 }
 
 func (s *ReturnTypeStore) create(ctx context.Context, tx *sql.Tx, returntype *ReturnType) error {
-	query := `INSERT INTO return_types (return_name) VALUES ($1);`
+	query := `INSERT INTO return_types (return_name) VALUES ($1) returning id`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
@@ -78,19 +79,18 @@ func (s *ReturnTypeStore) create(ctx context.Context, tx *sql.Tx, returntype *Re
 	)
 
 	if err != nil {
+
 		var pqErr *pq.Error
 		if errors.As(err, &pqErr) {
 			switch pqErr.Code {
 			case "23505":
-				return ErrDuplicateType
+				return ErrDuplicateReturnType
 			default:
 				return err
 			}
 		}
-
 	}
 	return nil
-
 }
 
 func (s *ReturnTypeStore) delete(ctx context.Context, tx *sql.Tx, returnTypeID string) error {

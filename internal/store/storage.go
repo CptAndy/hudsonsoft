@@ -16,7 +16,7 @@ var (
 	ErrDuplicateCustomerID = errors.New("customer_id duplicate not allowed...violates unique contraints")
 	ErrDuplicateProduct    = errors.New("product_name duplicate not allowed...violates unique contraints")
 	ErrDuplicateType       = errors.New("type_name duplicate not allowed...violates unique contraints")
-	ErrDuplicateReason     = errors.New("reason_name duplicate not allowed...violates unique contraints")
+	ErrDuplicateReturnType = errors.New("return_type duplicate not allowed...violates unique contraints")
 
 	QueryTimeoutDuration = time.Second * 5
 )

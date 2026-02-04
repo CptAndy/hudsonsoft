@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/CptAndy/hudsonsoftbackend/internal/store"
@@ -18,11 +19,15 @@ func (app *application) createProductHandler(w http.ResponseWriter, r *http.Requ
 	var payload CreateProductPayload
 
 	if err := readJson(w, r, &payload); err != nil {
+
+		log.Println("INSIDE READ JSON")
+
 		app.badRequestResponse(w, r, err)
 		return
 	}
 
 	if err := Validate.Struct(payload); err != nil {
+		log.Println("INSIDE VALIDATE JSON")
 		app.badRequestResponse(w, r, err)
 		return
 	}
@@ -34,11 +39,15 @@ func (app *application) createProductHandler(w http.ResponseWriter, r *http.Requ
 
 	err := app.store.Products.Create(ctx, product)
 	if err != nil {
+		//log.Printf("HANDLER ERR TYPE: %T", err)
+		//log.Printf("HANDLER ERR VALUE: %+v", err)
 		switch err {
 		case store.ErrDuplicateProduct:
+			//log.Println("INSIDE CONFLICT RESPONSE")
 			app.conflictResponse(w, r, err)
 			return
 		default:
+			//log.Println("INSIDE INTERNAL SERVER ERROR RESPONSE")
 			app.internalServerError(w, r, err)
 			return
 		}
