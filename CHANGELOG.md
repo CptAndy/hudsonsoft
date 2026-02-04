@@ -4,7 +4,7 @@
 
 ## [0.0.8] - 2026-02-03
 ### Added
-- Auto version bump via workflow
+- Fixed status codes for postman API
 
 ## [0.0.7] - 2026-01-27
 ### Added
