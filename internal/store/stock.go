@@ -37,8 +37,7 @@ func (s *StockStore) Delete(ctx context.Context, product_id string) error {
 	})
 }
 func (s *StockStore) GetByID(ctx context.Context, product_id string) (*Stock, error) {
-	query := `SELECT s.product_name, s.product_id, s.stock, s.price, s.instock, s.onorder
-	FROM stock WHERE product_id = $1`
+	query := `SELECT  s.id, s.product_name, s.product_id, s.stock, s.price, s.instock, s.onorder FROM stock s WHERE product_id = $1`
 
 ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 defer cancel()
@@ -50,6 +49,7 @@ err := s.db.QueryRowContext(
 	query,
 	product_id,
 ).Scan(
+	&stock.ID,
 	&stock.Product_name,
 	&stock.Product_ID,
 	&stock.Stock,

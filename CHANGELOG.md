@@ -4,7 +4,7 @@
 
 ## [0.0.11] - 2026-02-11
 ### Added
-- Auto version bump via workflow
+- Implemented a the stock creating, gettingByID, and deleting by ID
 
 ## [0.0.10] - 2026-02-04
 ### Added
