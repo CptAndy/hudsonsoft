@@ -36,7 +36,7 @@ type Product struct {
 	Type_id        int64  `json:"Type"`
 }
 
-const version = "0.0.11"
+const version = "0.0.12"
 
 func main() {
 	err := godotenv.Load()
