@@ -11,7 +11,9 @@ import (
 type CreateProductPayload struct {
 	Product_name string `json:"product_name" validate:"required,min=2,max=50"`
 }
+type prodKey string
 
+const prodCtx prodKey = "product"
 
 func (app *application) createProductHandler(w http.ResponseWriter, r *http.Request) {
 	var payload CreateProductPayload
@@ -79,7 +81,6 @@ func (app *application) getProductHandler(w http.ResponseWriter, r *http.Request
 	}
 
 }
-
 func (app *application) deleteProductHandler(w http.ResponseWriter, r *http.Request) {
 	prodID := chi.URLParam(r, "productID")
 
