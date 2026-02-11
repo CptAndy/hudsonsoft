@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"database/sql"
+	"strings"
 )
 
 type Customer struct {
@@ -107,8 +108,8 @@ func (s *CustomerStore) create(ctx context.Context, tx *sql.Tx, customer *Custom
 	err := tx.QueryRowContext(
 		ctx,
 		query,
-		customer.First_name,
-		customer.Last_name,
+		strings.ToUpper(customer.First_name),
+		strings.ToUpper(customer.Last_name),
 		customer.Email,
 		customer.City,
 		customer.State,

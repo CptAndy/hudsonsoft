@@ -87,6 +87,15 @@ func (app *application) mount() *chi.Mux {
 
 			})
 
+			r.Route("/management/stock", func (r chi.Router)  {
+				r.Put("/", app.createStockHandler)
+			})
+
+			r.Route("/management/stock/{product_id}", func(r chi.Router) {
+				r.Get("/", app.getStockHandler)
+				r.Delete("/", app.deleteStockHandler)
+				
+			})
 		})
 
 		r.Route("/adminfunctions", func(r chi.Router) {

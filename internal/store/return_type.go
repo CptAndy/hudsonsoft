@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"strings"
 
 	"github.com/lib/pq"
 )
@@ -73,7 +74,7 @@ func (s *ReturnTypeStore) create(ctx context.Context, tx *sql.Tx, returntype *Re
 	err := tx.QueryRowContext(
 		ctx,
 		query,
-		returntype.Return_name,
+		strings.ToUpper(returntype.Return_name),
 	).Scan(
 		&returntype.ID,
 	)

@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"database/sql"
+	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -57,13 +58,13 @@ VALUES ($1,$2,$3) returning id, emp_id
 	err := tx.QueryRowContext(
 		ctx,
 		query,
-		employee.First_name,
-		employee.Last_name,
+
+		strings.ToUpper(employee.First_name),
+		strings.ToUpper(employee.Last_name),
 		employee.Password.hash,
 	).Scan(
 		&employee.ID,
-	&employee.Emp_id,
-
+		&employee.Emp_id,
 	)
 	if err != nil {
 		switch {

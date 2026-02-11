@@ -15,6 +15,7 @@ var (
 	ErrDuplicateEmployeeID = errors.New("employee_id duplicate not allowed...violates unique contraints")
 	ErrDuplicateCustomerID = errors.New("customer_id duplicate not allowed...violates unique contraints")
 	ErrDuplicateProduct    = errors.New("product_name duplicate not allowed...violates unique contraints")
+	ErrDuplicateStock      = errors.New("product_name duplicate not allowed...violates unique contraints")
 	ErrDuplicateType       = errors.New("type_name duplicate not allowed...violates unique contraints")
 	ErrDuplicateReturnType = errors.New("return_type duplicate not allowed...violates unique contraints")
 
@@ -37,6 +38,11 @@ type Storage struct {
 		GetBySalesNum(context.Context, string) (*Product, error)
 		Delete(context.Context, string) error
 	}
+	Stock interface {
+		Create(context.Context, *Stock) error
+		GetByID(context.Context, string) (*Stock, error)
+		Delete(context.Context, string) error
+	}
 	ProductTypes interface {
 		Create(context.Context, *ProductType) error
 		GetByTypeID(context.Context, string) (*ProductType, error)
@@ -56,6 +62,7 @@ func NewStorage(db *sql.DB) Storage {
 		Products:     &ProductStore{db},
 		ProductTypes: &ProductTypeStore{db},
 		ReturnTypes:  &ReturnTypeStore{db},
+		Stock:        &StockStore{db},
 	}
 }
 

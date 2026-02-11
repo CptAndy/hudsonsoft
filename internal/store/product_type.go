@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"strings"
 
 	"github.com/lib/pq"
 )
@@ -80,7 +81,7 @@ func (s *ProductTypeStore) create(ctx context.Context, tx *sql.Tx, prodtype *Pro
 	err := tx.QueryRowContext(
 		ctx,
 		query,
-		prodtype.Type_Name,
+		strings.ToUpper(prodtype.Type_Name),
 	).Scan(
 		&prodtype.ID,
 	)
