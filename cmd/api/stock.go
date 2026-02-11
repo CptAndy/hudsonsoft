@@ -1,10 +1,16 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"net/http"
 
 	"github.com/CptAndy/hudsonsoftbackend/internal/store"
+	"github.com/go-chi/chi/v5"
+)
+
+var (
+	missingStockID = errors.New("product_id is missing")
 )
 
 type CreateStockPayload struct {
@@ -52,5 +58,58 @@ func (app *application) createStockHandler(w http.ResponseWriter, r *http.Reques
 			return
 		}
 	}
+
+}
+
+func (app *application) getStockHandler(w http.ResponseWriter, r *http.Request) {
+	product_id := chi.URLParam(r, "product_id")
+
+	if product_id == "" {
+		app.badRequestResponse(w, r, missingStockID)
+		return
+	}
+
+	ctx := r.Context()
+
+
+stock, err := app.store.Stock.GetByID(ctx, product_id)
+if err != nil {
+	switch err {
+	case store.ErrNotFound:
+		app.notFoundResponse(w, r, err)
+	default:
+		app.internalServerError(w, r, err)
+	}
+	return
+}
+
+if err := app.jsonResponse(w, http.StatusOK, stock); err != nil {
+	app.internalServerError(w, r, err)
+	return
+}
+
+}
+
+func (app *application) deleteStockHandler(w http.ResponseWriter, r *http.Request) {
+	product_id := chi.URLParam(r, "product_id")
+
+	if product_id == "" {
+		app.badRequestResponse(w, r, missingStockID)
+		return
+	}
+
+	ctx := r.Context()
+
+	err := app.store.Stock.Delete(ctx, product_id)
+	if err != nil {
+		switch err {
+		case store.ErrNotFound:
+			app.notFoundResponse(w, r, err)
+		default:
+			app.internalServerError(w, r, err)
+		}
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 
 }
